@@ -1,6 +1,6 @@
 ﻿namespace ASTModification.Healer
 {
-    [Rotation("AST_TestPhase", CombatType.PvE, Description = "Heavy beta rotation for AST v0.3", GameVersion = "7.05")]
+    [Rotation("AST_TestPhase", CombatType.PvE, Description = "Heavy beta rotation for AST v0.4", GameVersion = "7.05")]
     [SourceCode(Path = "main/ASTModification/Healer/AST_TestPhase.cs")]
     [Api(3)]
     public class Akira_AST_Beta : AstrologianRotation
