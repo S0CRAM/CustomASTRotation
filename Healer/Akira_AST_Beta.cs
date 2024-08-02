@@ -1,6 +1,6 @@
 ﻿namespace ASTModification.Healer
 {
-    [Rotation("AST_TestPhase", CombatType.PvE, Description = "Heavy beta rotation for AST v0.2", GameVersion = "7.05")]
+    [Rotation("AST_TestPhase", CombatType.PvE, Description = "Heavy beta rotation for AST v0.3", GameVersion = "7.05")]
     [SourceCode(Path = "main/ASTModification/Healer/AST_TestPhase.cs")]
     [Api(3)]
     public class Akira_AST_Beta : AstrologianRotation
@@ -54,7 +54,7 @@
         #endregion
 
         #region Defense Logic
-        [RotationDesc(ActionID.TheSpirePvE, ActionID.TheBolePvE, ActionID.ExaltationPvE)]
+        [RotationDesc(ActionID.TheSpirePvE, ActionID.TheBolePvE, ActionID.ExaltationPvE, ActionID.CelestialIntersectionPvE)]
         protected override bool DefenseSingleAbility(IAction nextGCD, out IAction act)
         {
             // Cards
@@ -62,12 +62,13 @@
             if (TheBolePvE.CanUse(out act) && InCombat) return true;
             // oGCD
             if (InCombat && ExaltationPvE.CanUse(out act)) return true;
+            if (CelestialIntersectionPvE.CanUse(out act)) return true;
             return base.DefenseSingleAbility(nextGCD, out act);
         }
         [RotationDesc(ActionID.SunSignPvE, ActionID.CollectiveUnconsciousPvE)]
         protected override bool DefenseAreaAbility(IAction nextGCD, out IAction act)
         {
-            if (InCombat && SunSignPvE.CanUse(out act)) return true; // Sun Sign should be prioritized when available
+            if (InCombat && SunSignPvE.CanUse(out act) && Player.HasStatus(true, StatusID.Suntouched)) return true; // Sun Sign should be prioritized when available
             if (InCombat && CollectiveUnconsciousPvE.CanUse(out act)) return true;
             return base.DefenseAreaAbility(nextGCD, out act);
         }
@@ -88,7 +89,7 @@
         #endregion
 
         #region Heal Logic
-        [RotationDesc(ActionID.TheArrowPvE, ActionID.TheEwerPvE, ActionID.EssentialDignityPvE, ActionID.CelestialIntersectionPvE)]
+        [RotationDesc(ActionID.TheArrowPvE, ActionID.TheEwerPvE, ActionID.EssentialDignityPvE)]
         protected override bool HealSingleAbility(IAction nextGCD, out IAction act)
         {
             // Cards
@@ -96,7 +97,6 @@
             if (TheEwerPvE.CanUse(out act) && InCombat) return true;
             // oGCD
             if (EssentialDignityPvE.CanUse(out act) && EssentialDignityPvE.Target.Target.GetHealthRatio() < EssDigHeal) return true;
-            if (CelestialIntersectionPvE.CanUse(out act)) return true;
             return base.HealSingleAbility(nextGCD, out act);
         }
         [RotationDesc(ActionID.MicrocosmosPvE, ActionID.LadyOfCrownsPvE, ActionID.CelestialOppositionPvE, ActionID.HoroscopePvE)]
@@ -154,12 +154,6 @@
             if (TheSpirePvE.CanUse(out act) && UmbralDrawPvE.Cooldown.WillHaveOneCharge(12)) return true;
             if (TheEwerPvE.CanUse(out act) && AstralDrawPvE.Cooldown.WillHaveOneCharge(12)) return true;
             if (TheBolePvE.CanUse(out act) && AstralDrawPvE.Cooldown.WillHaveOneCharge(12)) return true;
-
-            if (Player.WillStatusEnd(6, true, StatusID.Suntouched))
-            {
-                SunSignPvE.CanUse(out act);
-                return true;
-            }
 
             return base.GeneralAbility(nextGCD, out act);
         }
