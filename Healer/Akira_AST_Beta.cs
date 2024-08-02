@@ -68,7 +68,7 @@
         [RotationDesc(ActionID.SunSignPvE, ActionID.CollectiveUnconsciousPvE)]
         protected override bool DefenseAreaAbility(IAction nextGCD, out IAction act)
         {
-            if (InCombat && SunSignPvE.CanUse(out act) && Player.HasStatus(true, StatusID.Suntouched)) return true; // Sun Sign should be prioritized when available
+            if (InCombat && SunSignPvE.CanUse(out act)) return true; // Sun Sign should be prioritized when available
             if (InCombat && CollectiveUnconsciousPvE.CanUse(out act)) return true;
             return base.DefenseAreaAbility(nextGCD, out act);
         }
